@@ -1,0 +1,28 @@
+{
+    "checksum": "701cd0ceb795aa16d26079c7d40341fd",
+    "wallpaper": "/home/jimmyneutron/Images/wallpapers/rachel-loughman-ePOXA9cwxac-unsplash.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#0d131e",
+        "foreground": "#c2c4c6",
+        "cursor": "#c2c4c6"
+    },
+    "colors": {
+        "color0": "#0d131e",
+        "color1": "#43557A",
+        "color2": "#3C5285",
+        "color3": "#455A8D",
+        "color4": "#4F6798",
+        "color5": "#61779D",
+        "color6": "#5971A7",
+        "color7": "#c2c4c6",
+        "color8": "#5c6370",
+        "color9": "#43557A",
+        "color10": "#3C5285",
+        "color11": "#455A8D",
+        "color12": "#4F6798",
+        "color13": "#61779D",
+        "color14": "#5971A7",
+        "color15": "#c2c4c6"
+    }
+}

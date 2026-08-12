@@ -1,0 +1,28 @@
+{
+    "checksum": "77ebb0c9fc4d224aeb705048fd3247ea",
+    "wallpaper": "/home/jimmyneutron/Images/wallpapers/venti-views-8WJqVwDnV54-unsplash.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#091215",
+        "foreground": "#c1c3c4",
+        "cursor": "#c1c3c4"
+    },
+    "colors": {
+        "color0": "#091215",
+        "color1": "#5F5053",
+        "color2": "#9C5F26",
+        "color3": "#CE4F1C",
+        "color4": "#986C5A",
+        "color5": "#CE9945",
+        "color6": "#EEA158",
+        "color7": "#c1c3c4",
+        "color8": "#58666c",
+        "color9": "#5F5053",
+        "color10": "#9C5F26",
+        "color11": "#CE4F1C",
+        "color12": "#986C5A",
+        "color13": "#CE9945",
+        "color14": "#EEA158",
+        "color15": "#c1c3c4"
+    }
+}

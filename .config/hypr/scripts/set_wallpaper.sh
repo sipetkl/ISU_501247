@@ -1,8 +1,11 @@
 #!/bin/bash
 
-DIR="$HOME/Images/wallpapers"
+set -euo pipefail
 
-IMAGE=$(find $(readlink -f "$HOME/Images/wallpapers") -maxdepth 1 -type f | shuf -n 1)  # выбираем случайное изображение
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-swww img $IMAGE --transition-type none
-wal -s -i $IMAGE
+source "${SCRIPT_DIR}/wallpaper_common.sh"
+
+wallpaper_setup "set_wallpaper.sh"
+wallpaper_select_random_image
+wallpaper_apply "$WALLPAPER_IMAGE" "none"

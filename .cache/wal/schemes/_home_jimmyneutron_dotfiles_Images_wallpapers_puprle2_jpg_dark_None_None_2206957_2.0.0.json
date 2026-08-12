@@ -1,0 +1,28 @@
+{
+    "checksum": "1984451950c2b4c20e3fff61482549c7",
+    "wallpaper": "/home/jimmyneutron/dotfiles/Images/wallpapers/puprle2.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#151d33",
+        "foreground": "#c4c6cc",
+        "cursor": "#c4c6cc"
+    },
+    "colors": {
+        "color0": "#151d33",
+        "color1": "#9B4F6C",
+        "color2": "#EA656E",
+        "color3": "#B78E75",
+        "color4": "#F98F7A",
+        "color5": "#70608E",
+        "color6": "#916B96",
+        "color7": "#c4c6cc",
+        "color8": "#646b7b",
+        "color9": "#9B4F6C",
+        "color10": "#EA656E",
+        "color11": "#B78E75",
+        "color12": "#F98F7A",
+        "color13": "#70608E",
+        "color14": "#916B96",
+        "color15": "#c4c6cc"
+    }
+}

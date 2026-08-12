@@ -1,0 +1,28 @@
+{
+    "checksum": "1e05bf6919dc4b1c5ba971d5ea15d47c",
+    "wallpaper": "/home/jimmyneutron/Images/wallpapers/bd4hus0p4mbh1.png",
+    "alpha": "100",
+    "special": {
+        "background": "#0d0a19",
+        "foreground": "#c2c1c5",
+        "cursor": "#c2c1c5"
+    },
+    "colors": {
+        "color0": "#0d0a19",
+        "color1": "#604E69",
+        "color2": "#B03244",
+        "color3": "#DF5755",
+        "color4": "#435594",
+        "color5": "#AF689B",
+        "color6": "#8C9DA2",
+        "color7": "#c2c1c5",
+        "color8": "#5d596e",
+        "color9": "#604E69",
+        "color10": "#B03244",
+        "color11": "#DF5755",
+        "color12": "#435594",
+        "color13": "#AF689B",
+        "color14": "#8C9DA2",
+        "color15": "#c2c1c5"
+    }
+}

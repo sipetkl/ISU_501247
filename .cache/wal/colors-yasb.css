@@ -1,0 +1,26 @@
+/* Colors for YASB */
+:root {
+
+    /* Special */
+    --background: #181716;
+    --foreground: #c5c5c4;
+    --cursor: #c5c5c4;
+
+    /* Colors */
+    --color0: #181716;
+    --color1: #719571;
+    --color2: #A39565;
+    --color3: #D4A85E;
+    --color4: #DFBE63;
+    --color5: #2D6E8F;
+    --color6: #8A7182;
+    --color7: #c5c5c4;
+    --color8: #71715d;
+    --color9: #719571;
+    --color10: #A39565;
+    --color11: #D4A85E;
+    --color12: #DFBE63;
+    --color13: #2D6E8F;
+    --color14: #8A7182;
+    --color15: #c5c5c4;
+}

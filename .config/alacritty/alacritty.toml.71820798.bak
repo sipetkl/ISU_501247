@@ -1,0 +1,11 @@
+[env]
+TERM = "xterm-256color"
+
+[window]
+decorations = "Transparent"
+opacity = 0.65
+
+[font]
+normal.family = "JetBrainsMono Nerd Font"
+size = 14
+

@@ -30,7 +30,7 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 export SB_API="http://127.0.0.1:9090"
-export SB_SECRET="c82eacd7723b8284a369e886112cf371"
+[ -f "$HOME/.zsecrets" ] && source "$HOME/.zsecrets"
 
 vpn-hy2() {
     curl -s -X PUT "$SB_API/proxies/proxy-select" -H "Authorization: Bearer $SB_SECRET" -H "Content-Type: application/json" -d '{"name":"hy2-out"}' >/dev/null

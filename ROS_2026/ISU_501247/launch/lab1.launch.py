@@ -4,14 +4,11 @@ from launch.actions import ExecuteProcess, TimerAction
 
 def generate_launch_description():
     return LaunchDescription([
-        # 1. Запускаем симулятор
         Node(
             package='turtlesim',
             executable='turtlesim_node',
             name='sim'
         ),
-        
-        # 2. Ждем 2 секунды и спавним вторую черепаху через службу
         TimerAction(
             period=2.0,
             actions=[
@@ -22,16 +19,12 @@ def generate_launch_description():
                 )
             ]
         ),
-
-        # 3. Контроллер Лидера (управляет turtle1)
         Node(
             package='mybestcontroller',
             executable='lab1_controller',
             name='controller_leader',
             namespace='ns1_501247'
         ),
-
-        # 4. Контроллер Ведомого (управляет turtle2)
         Node(
             package='mybestcontroller',
             executable='lab1_controller',

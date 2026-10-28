@@ -1,5 +1,6 @@
 import rclpy
 from rclpy.node import Node
+
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64
@@ -7,12 +8,12 @@ from std_msgs.msg import Float64
 import math
 
 
-class TurtleController(Node):
+class MyController(Node):
 
     def __init__(self):
-        super().__init__('turtle_controller')
+        super().__init__('controller')
             
-        self.pub = self.create_publisher(
+        self.publisher = self.create_publisher(
             Twist,
             'turtle1/cmd_vel',
             10
@@ -20,14 +21,14 @@ class TurtleController(Node):
 
         if self.get_namespace() == '/ns1_501247':
 
-            self.sub = self.create_subscription(
+            self.subscription = self.create_subscription(
                 Pose,
                 'turtle1/pose',
-                self.pose_cb_1,
+                self.pose_callback_1,
                 10
             )
 
-            self.res_pub = self.create_publisher(
+            self.result_publisher = self.create_publisher(
                 Float64,
                 '/result_501247',
                 10
@@ -35,174 +36,187 @@ class TurtleController(Node):
 
         else:
 
-            self.sub_leader = self.create_subscription(
+            self.subscription_1 = self.create_subscription(
                 Pose,
                 '/ns1_501247/turtle1/pose',
-                self.leader_pose_save,
+                self.pose_turtle_1_save,
                 10
             )
 
-            self.sub_follower = self.create_subscription(
+            self.subscription_2 = self.create_subscription(
                 Pose,
                 'turtle1/pose',
-                self.pose_cb_2,
+                self.pose_callback_2,
                 10
             )
 
         self.start_time = self.get_clock().now()
 
-        self.target_index = 0
-
-        self.points = [
+        self.current_target = 0
+        self.targets_list = [
             [2.0, 3.0],
             [5.0, 4.0],
             [4.0, 2.0],
             [5.0, 4.0]
         ]
 
-        self.tolerance = 0.05
+        self.error = 0.05
 
-        self.leader_pose = None
+        self.turtle1_pose = None
 
-        self.is_done = False
+        self.finished = False
 
 
-    def pose_cb_1(self, msg: Pose):
+    def pose_callback_1(self, pose: Pose):
 
         cmd = Twist()
 
-        if self.target_index >= len(self.points):
+        if self.current_target >= len(self.targets_list):
 
-            if not self.is_done:
+            if not self.finished:
 
-                time_diff = self.get_clock().now() - self.start_time
-                seconds = time_diff.nanoseconds / 1e9
+                elapsed = self.get_clock().now() - self.start_time
 
-                res_msg = Float64()
-                res_msg.data = float(seconds)
+                seconds = elapsed.nanoseconds / 1e9
 
-                self.res_pub.publish(res_msg)
+                result = Float64()
+                result.data = float(seconds)
 
-                self.get_logger().info(f'Done in {seconds:.2f} seconds')
+                self.result_publisher.publish(result)
 
-                self.is_done = True
+                self.get_logger().info(
+                    f'Finished in {seconds:.2f} seconds'
+                )
+
+                self.finished = True
 
             cmd.linear.x = 0.0
             cmd.angular.z = 0.0
-            self.pub.publish(cmd)
+            self.publisher.publish(cmd)
             
-            if self.is_done:
-                res_msg = Float64()
-                time_diff = self.get_clock().now() - self.start_time
-                res_msg.data = float(time_diff.nanoseconds / 1e9)
-                self.res_pub.publish(res_msg)
+            if self.finished:
+                result = Float64()
+                elapsed = self.get_clock().now() - self.start_time
+                result.data = float(elapsed.nanoseconds / 1e9)
+                self.result_publisher.publish(result)
 
             return
 
-        curr_x = msg.x
-        curr_y = msg.y
-        curr_theta = msg.theta
+        c_x = pose.x
+        c_y = pose.y
+        rad_c = pose.theta
 
-        target_x, target_y = self.points[self.target_index]
+        t_x, t_y = self.targets_list[self.current_target]
 
-        diff_x = target_x - curr_x
-        diff_y = target_y - curr_y
+        dx = t_x - c_x
+        dy = t_y - c_y
 
-        desired_angle = math.atan2(diff_y, diff_x)
-        angle_diff = desired_angle - curr_theta
+        rad_t = math.atan2(dy, dx)
 
-        normalized_angle = math.atan2(
-            math.sin(angle_diff),
-            math.cos(angle_diff)
+        d_rad = rad_t - rad_c
+
+        purp = math.atan2(
+            math.sin(d_rad),
+            math.cos(d_rad)
         )
 
-        if abs(normalized_angle) > self.tolerance:
+        if abs(purp) > self.error:
 
-            if normalized_angle > 0:
-                cmd.angular.z = 1.5 * min(abs(normalized_angle), 2.0)
+            if purp > 0:
+                cmd.angular.z = 1.5 * min(abs(purp), 2.0)
             else:
-                cmd.angular.z = -1.5 * min(abs(normalized_angle), 2.0)
+                cmd.angular.z = -1.5 * min(abs(purp), 2.0)
 
-            self.pub.publish(cmd)
+            self.publisher.publish(cmd)
             return
 
-        dist = (diff_x**2 + diff_y**2)**0.5
+        distance = (dx**2 + dy**2)**0.5
 
-        if dist > self.tolerance:
+        if distance > self.error:
 
-            cmd.linear.x = 1.5 * min(dist, 1.5)
+            cmd.linear.x = 1.5 * min(distance, 1.5)
 
         else:
-            self.get_logger().info(f'Reached target ({target_x}, {target_y})')
-            self.target_index += 1
+            self.get_logger().info(
+                f'Target ({t_x}, {t_y}) reached, '
+                f'distance = {distance:.5f}'
+            )
+            self.current_target += 1
 
-        self.pub.publish(cmd)
+        self.publisher.publish(cmd)
     
 
-    def pose_cb_2(self, msg: Pose):
+    def pose_callback_2(self, pose: Pose):
 
-        if self.leader_pose is None:
+        if self.turtle1_pose is None:
             return
         
         cmd = Twist()
 
-        lead_x = self.leader_pose.x
-        lead_y = self.leader_pose.y
+        t1_x = self.turtle1_pose.x
+        t1_y = self.turtle1_pose.y
 
-        follow_x = msg.x
-        follow_y = msg.y
-        follow_theta = msg.theta
+        t2_x = pose.x
+        t2_y = pose.y
+        rad_t2 = pose.theta
 
-        diff_x = lead_x - follow_x
-        diff_y = lead_y - follow_y
+        dx = t1_x - t2_x
+        dy = t1_y - t2_y
 
-        desired_angle = math.atan2(diff_y, diff_x)
-        angle_diff = desired_angle - follow_theta
+        rad_t = math.atan2(dy, dx)
 
-        normalized_angle = math.atan2(
-            math.sin(angle_diff),
-            math.cos(angle_diff)
+        d_rad = rad_t - rad_t2
+
+        angle = math.atan2(
+            math.sin(d_rad),
+            math.cos(d_rad)
         )
 
-        if abs(normalized_angle) > self.tolerance:
+        if abs(angle) > self.error:
 
-            if normalized_angle > 0:
-                cmd.angular.z = 2.0 * min(abs(normalized_angle), 1.5)
+            if angle > 0:
+                cmd.angular.z = 2.0 * min(abs(angle), 1.5)
             else:
-                cmd.angular.z = -2.0 * min(abs(normalized_angle), 1.5)
+                cmd.angular.z = -2.0 * min(abs(angle), 1.5)
 
-        dist = (diff_x**2 + diff_y**2)**0.5
+        distance = (dx**2 + dy**2)**0.5
 
-        if dist > 0.5:
-            if abs(normalized_angle) < 0.8:
-                cmd.linear.x = 1.5 * min(dist, 1.5)
+        if distance > 0.5:
+            if abs(angle) < 0.8:
+                cmd.linear.x = 1.5 * min(distance, 1.5)
         else:
             cmd.linear.x = 0.0
-            error_theta = self.leader_pose.theta - follow_theta
+            angle_error = self.turtle1_pose.theta - pose.theta
 
-            error_theta = math.atan2(
-                math.sin(error_theta),
-                math.cos(error_theta)
+            angle_error = math.atan2(
+                math.sin(angle_error),
+                math.cos(angle_error)
             )
-            cmd.angular.z = 2.0 * error_theta
+            cmd.angular.z = 2.0 * angle_error
 
-        self.pub.publish(cmd)
+        self.publisher.publish(cmd)
 
 
-    def leader_pose_save(self, msg: Pose):
-        self.leader_pose = msg
+    def pose_turtle_1_save(self, pose: Pose):
+
+        self.turtle1_pose = pose
 
 
 def main(args=None):
+
     rclpy.init(args=args)
-    node = TurtleController()
+
+    node = MyController()
 
     try:
         rclpy.spin(node)
+
     except KeyboardInterrupt:
         pass
+
     finally:
         node.destroy_node()
+
         if rclpy.ok():
             rclpy.shutdown()
 

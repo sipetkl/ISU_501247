@@ -1,1 +1,0 @@
-/home/jimmyneutron/dotfiles/.config/hypr/scripts/wallpaper_common.sh

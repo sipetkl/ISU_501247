@@ -1,5 +1,5 @@
-float64 Xcurrent
-float64 Ycurrent 
+float64 xcurrent
+float64 ycurrent 
 ---
-float64 Distance
-float64 Angle
+float64 distance
+float64 angle

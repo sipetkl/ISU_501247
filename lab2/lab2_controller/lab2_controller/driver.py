@@ -4,6 +4,7 @@ from lab2_interfaces.srv import A501247
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist 
 import math 
+import time
 
 class DriverNode(Node):
 	def __init__(self):
@@ -13,12 +14,17 @@ class DriverNode(Node):
 		self.client = self.create_client(A501247, 'get_target')
 		self.current_pose = Pose()
 		self.req_pending = False
+		self.last_req_time = 0.0
 
 	def pose_callback(self, msg):
-		if self.req_pending:
+		self.current_pose = msg
+		if not self.client.service_is_ready():
+			return
+		now = time.time()
+		if self.req_pending and (now - self.last_req_time < 0.5):
 			return
 		self.req_pending = True
-		self.current_pose = msg 
+		self.last_req_time = now 
 		req = A501247.Request()
 		req.xcurrent = msg.x
 		req.ycurrent = msg.y 
@@ -28,7 +34,10 @@ class DriverNode(Node):
 
 	def response_callback(self, future):
 		self.req_pending = False
-		response = future.result()
+		try:
+			response = future.result()
+		except Exception:
+			return
 		cmd = Twist()
 		error_distance = response.distance
 		error_angle = response.angle - self.current_pose.theta
@@ -37,7 +46,7 @@ class DriverNode(Node):
 			cmd.linear.x = 0.0
 			cmd.angular.z = 4.0 * error_angle
 		else:
-			cmd.linear.x = 0.5 * error_distance
+			cmd.linear.x = min(2.0, 0.5 * error_distance)
 			cmd.angular.z = 4.0 * error_angle
 		self.publisher.publish(cmd)
  

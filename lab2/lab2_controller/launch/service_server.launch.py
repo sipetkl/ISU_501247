@@ -6,6 +6,7 @@ def generate_launch_description():
         Node(
             package='lab2_controller',
             executable='navigator',
+            name='navigator',
             output='screen'
         )
     ])

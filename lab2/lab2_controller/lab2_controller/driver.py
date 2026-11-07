@@ -12,7 +12,12 @@ class DriverNode(Node):
 		self.subscriber = self.create_subscription(Pose, '/turtle1/pose', self.pose_callback, 10)
 		self.client = self.create_client(A501247, 'get_target')
 		self.current_pose = Pose()
+		self.req_pending = False
+
 	def pose_callback(self, msg):
+		if self.req_pending:
+			return
+		self.req_pending = True
 		self.current_pose = msg 
 		req = A501247.Request()
 		req.xcurrent = msg.x
@@ -22,6 +27,7 @@ class DriverNode(Node):
 		future.add_done_callback(self.response_callback)
 
 	def response_callback(self, future):
+		self.req_pending = False
 		response = future.result()
 		cmd = Twist()
 		error_distance = response.distance
